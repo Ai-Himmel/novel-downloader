@@ -3,10 +3,11 @@ import getopt
 import sys
 from urllib import quote
 
-opt,argv=getopt.getopt(sys.argv[1:],'ho:s:n:')
+opt,argv=getopt.getopt(sys.argv[1:],'ho:s:n:c')
 name=''
 keyword=''
 chapter_number=0
+calibre_mode=False
 for o,a in opt:
     if o=='-o':
         name=a
@@ -14,6 +15,9 @@ for o,a in opt:
         keyword=a
     if o=='-n':
         chapter_number=int(a)
+    if o=='-c':
+        calibre_mode=True 
+        
 
 if keyword=='':
     print "-s option cannot be empty"
@@ -49,6 +53,8 @@ for i in xrange(chapter_number,a):
     s=requests.get('http://chapterup.zhuishushenqi.com/chapter/'+quote(j['chapters'][i]['link']))
     j_tmp=s.json()
     f=open(name,'a+')
+    if calibre_mode:
+        f.write('#')
     f.write(j['chapters'][i]['title'].encode('utf8')+'\n')
     f.write(j_tmp["chapter"]['body'].encode('utf8')+'\n')
     f.close()
